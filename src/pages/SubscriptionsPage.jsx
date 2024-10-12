@@ -1,6 +1,7 @@
 import {useEffect, useState} from "react";
 import axios from "axios";
 import { useAuth } from "../hook/useAuth";
+import Loader from "../components/Loader.jsx";
 
 export default function Subscriptions() {
     const [loading, setLoading] = useState(false)
@@ -30,7 +31,7 @@ export default function Subscriptions() {
     return (
         <div>
             <h1>Attendances</h1>
-            {loading && <h3>Loading...</h3>}
+            {loading && <Loader/>}
 
             {subscriptions && (
                 <ul style={{listStyle: "none"}}>
