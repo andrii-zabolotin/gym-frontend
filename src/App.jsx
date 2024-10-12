@@ -1,9 +1,8 @@
-import './App.css'
-import {Routes, Route} from 'react-router-dom'
+import {Routes, Route, Navigate} from 'react-router-dom'
 import StaffLayout from "./components/StaffLayout.jsx";
 import Home from "./pages/HomePage.jsx";
 import UserLayout from "./components/UserLayout.jsx";
-import Profile from "./pages/ProfilePage.jsx";
+import AdminProfile from "./pages/AdminProfilePage.jsx";
 import Admin from "./pages/AdminPage.jsx";
 import NotFound from "./pages/NotFoundPage.jsx";
 import Attendances from "./pages/AttendancesPage.jsx";
@@ -12,61 +11,48 @@ import Trainings from "./pages/TrainingsPage.jsx";
 import Subscriptions from "./pages/SubscriptionsPage.jsx";
 import PermissionGroups from "./pages/PermissionGroupsPage.jsx";
 import Login from "./pages/LoginPage.jsx";
-import React from "react";
-import RequireAuth from "./hoc/RequireAuth.jsx";
-import { AuthProvider } from './hoc/AuthProvider.jsx';
+import {AuthProvider} from './hoc/AuthProvider.jsx';
+import Profile from "./pages/ProfilePage.jsx";
 
 function App() {
-  return (
-    <>
-    <AuthProvider>
-        <Routes>
-            <Route path="/" element={<UserLayout />}>
-                <Route index element={<Home />} />
-                <Route path="login" element={<Login />} />
-            </Route>
-            <Route path="/admin" element={<StaffLayout/>}>
-                <Route index element={
-                    <RequireAuth>
-                        <Admin/>
-                    </RequireAuth>
-                }/>
-                <Route path="attendances" element={
-                    <RequireAuth>
-                        <Attendances/>
-                    </RequireAuth>
-                }/>
-                <Route path="users" element={
-                    <RequireAuth>
-                        <Users/>
-                    </RequireAuth>
-                }/>
-                <Route path="trainings" element={
-                    <RequireAuth>
-                        <Trainings/>
-                    </RequireAuth>
-                }/>
-                <Route path="subscriptions" element={
-                    <RequireAuth>
-                        <Subscriptions/>
-                    </RequireAuth>
-                }/>
-                <Route path="permission-groups" element={
-                    <RequireAuth>
-                        <PermissionGroups/>
-                    </RequireAuth>
-                }/>
-                <Route path="profile" element={
-                    <RequireAuth>
-                        <Profile/>
-                    </RequireAuth>
-                }/>
-            </Route>
-            <Route path="*" element={<NotFound/>}/>
-        </Routes>
-    </AuthProvider>
-    </>
-  )
+    return (
+        <>
+            <AuthProvider>
+                <Routes>
+                    <Route path="/" element={<UserLayout/>}>
+                        <Route index element={<Home/>}/>
+                        <Route path="login" element={<Login/>}/>
+                        <Route path="profile" element={<Profile/>}/>
+                    </Route>
+                    <Route path="/admin" element={<StaffLayout/>}>
+                        <Route index element={
+                                <Admin/>
+                        }/>
+                        <Route path="attendances" element={
+                            <Attendances/>
+                        }/>
+                        <Route path="users" element={
+                            <Users/>
+                        }/>
+                        <Route path="trainings" element={
+                            <Trainings/>
+                        }/>
+                        <Route path="subscriptions" element={
+                            <Subscriptions/>
+                        }/>
+                        <Route path="permission-groups" element={
+                            <PermissionGroups/>
+                        }/>
+                        <Route path="profile" element={
+                            <AdminProfile/>
+                        }/>
+                    </Route>
+                    <Route path="*" element={<Navigate to="/404" replace/>}/>
+                    <Route path="/404" element={<NotFound/>}/>
+                </Routes>
+            </AuthProvider>
+        </>
+    )
 }
 
 export default App
