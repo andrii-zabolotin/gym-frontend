@@ -6,13 +6,13 @@ export default function Profile() {
     const navigate = useNavigate();
 
     return (
-        <div>
+        <>
             <h1>PROFILE</h1>
-            <button onClick={() => {
+            <button className="bg-blue-500 hover:bg-blue-700 text-white py-1 px-2 rounded" onClick={() => {
                 logout(
-                    navigate('/', {replace: true})
+                    () => navigate('/', {replace: true})
                 )
             }}>Logout</button>
-        </div>
+        </>
     )
 }
