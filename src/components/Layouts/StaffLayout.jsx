@@ -1,9 +1,55 @@
-import {NavLink, Outlet} from 'react-router-dom'
-import CustomLink from "./CustomLink.jsx";
+import {Navigate, NavLink, Outlet} from 'react-router-dom'
+import CustomLink from "../CustomLink.jsx";
+import {useAuth} from "../../hook/useAuth.jsx";
+import {useEffect, useState} from "react";
+import api from "../../../axios.config.js";
 
-export default function UserLayout() {
+export default function StaffLayout() {
+    const {token} = useAuth();
+    const [state, setState] = useState({
+        user: null,
+        loading: true,
+        error: null,
+    });
+
+    // Fetch user data with async function
+    useEffect(() => {
+        const fetchUserData = async () => {
+            try {
+                const response = await api.get('user/me/', {
+                    headers: {
+                        Authorization: `Token ${token}`,
+                    },
+                });
+                setState({
+                    user: response.data,
+                    loading: false,
+                    error: null,
+                });
+            } catch (error) {
+                console.error('Error fetching user:', error);
+                setState({
+                    user: null,
+                    loading: false,
+                    error: true,
+                });
+            }
+        };
+
+        fetchUserData();
+    }, [token]);
+
+    const {user, loading, error} = state;
+
+    if (loading) {
+        return null;
+    }
+
+    if (error || !user || !(user.is_superuser || user.is_staff || user.is_administrator)) {
+        return <Navigate to="/404" replace/>;
+    }
     return (
-        <>
+        <div className="max-w-[90vw] lg:max-w-[80vw] mx-auto">
             <header className="my-3">
                 <nav>
                     <ul className="flex justify-between items-center">
@@ -22,11 +68,12 @@ export default function UserLayout() {
                             </svg>
                         </NavLink></li>
                         <div className="lg:flex space-x-5 shrink-0 font-bold hidden">
-                            <CustomLink to="/">Home</CustomLink>
-                            <CustomLink to="about">About</CustomLink>
-                            <CustomLink to="profile">Profile</CustomLink>
-                            <CustomLink to="admin">Admin</CustomLink>
-                            <CustomLink to="login">Login</CustomLink>
+                            <li><CustomLink end to="attendances">ВІДВІДУВАННЯ</CustomLink></li>
+                            <li><CustomLink end to="users">КОРИСТУВАЧІ</CustomLink></li>
+                            <li><CustomLink end to="trainings">ТРЕНУВАННЯ</CustomLink></li>
+                            <li><CustomLink end to="user-trainings">БРОНЮВАННЯ</CustomLink></li>
+                            <li><CustomLink end to="subscriptions">ПІДПИСКИ</CustomLink></li>
+                            <li><CustomLink end to="permission-groups">ГРУПИ ДОЗОЛІВ</CustomLink></li>
                         </div>
                         <div className="lg:flex bg-white py-1 px-3 rounded-3xl space-x-5 hidden">
                             <li>
@@ -54,9 +101,9 @@ export default function UserLayout() {
                 </nav>
             </header>
 
-            <div className="flex flex-col items-center justify-center">
+            <div className="space-y-5 pb-5">
                 <Outlet/>
             </div>
-        </>
-)
+        </div>
+    )
 }

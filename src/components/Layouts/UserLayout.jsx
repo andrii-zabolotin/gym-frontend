@@ -1,53 +1,7 @@
-import {Navigate, NavLink, Outlet} from 'react-router-dom'
-import CustomLink from "./CustomLink.jsx";
-import {useAuth} from "../hook/useAuth.jsx";
-import {useEffect, useState} from "react";
-import api from "../../axios.config.js";
+import {NavLink, Outlet} from 'react-router-dom'
+import CustomLink from "../CustomLink.jsx";
 
-export default function StaffLayout() {
-    const {token} = useAuth();
-    const [state, setState] = useState({
-        user: null,
-        loading: true,
-        error: null,
-    });
-
-    // Fetch user data with async function
-    useEffect(() => {
-        const fetchUserData = async () => {
-            try {
-                const response = await api.get('user/me/', {
-                    headers: {
-                        Authorization: `Token ${token}`,
-                    },
-                });
-                setState({
-                    user: response.data,
-                    loading: false,
-                    error: null,
-                });
-            } catch (error) {
-                console.error('Error fetching user:', error);
-                setState({
-                    user: null,
-                    loading: false,
-                    error: true,
-                });
-            }
-        };
-
-        fetchUserData();
-    }, [token]);
-
-    const {user, loading, error} = state;
-
-    if (loading) {
-        return null;
-    }
-
-    if (error || !user || !(user.is_superuser || user.is_staff || user.is_administrator)) {
-        return <Navigate to="/404" replace/>;
-    }
+export default function UserLayout() {
     return (
         <>
             <header className="my-3">
@@ -68,11 +22,11 @@ export default function StaffLayout() {
                             </svg>
                         </NavLink></li>
                         <div className="lg:flex space-x-5 shrink-0 font-bold hidden">
-                            <li><CustomLink end to="attendances">ВІДВІДУВАННЯ</CustomLink></li>
-                            <li><CustomLink end to="users">КОРИСТУВАЧІ</CustomLink></li>
-                            <li><CustomLink end to="trainings">ТРЕНУВАННЯ</CustomLink></li>
-                            <li><CustomLink end to="subscriptions">ПІДПИСКИ</CustomLink></li>
-                            <li><CustomLink end to="permission-groups">ГРУПИ ДОЗОЛІВ</CustomLink></li>
+                            <CustomLink to="/">Home</CustomLink>
+                            <CustomLink to="about">About</CustomLink>
+                            <CustomLink to="profile">Profile</CustomLink>
+                            <CustomLink to="admin">Admin</CustomLink>
+                            <CustomLink to="login">Login</CustomLink>
                         </div>
                         <div className="lg:flex bg-white py-1 px-3 rounded-3xl space-x-5 hidden">
                             <li>
@@ -100,9 +54,9 @@ export default function StaffLayout() {
                 </nav>
             </header>
 
-            <div className="flex flex-col items-center">
+            <div className="flex flex-col items-center justify-center">
                 <Outlet/>
             </div>
         </>
-    )
+)
 }
