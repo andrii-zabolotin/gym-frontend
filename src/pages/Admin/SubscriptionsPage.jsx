@@ -1,7 +1,7 @@
 import {useEffect, useState} from "react";
 import axios from "axios";
-import { useAuth } from "../hook/useAuth";
-import Loader from "../components/Loader.jsx";
+import { useAuth } from "../../hook/useAuth.jsx";
+import Loader from "../../components/Loader.jsx";
 
 export default function Subscriptions() {
     const [loading, setLoading] = useState(false)
